@@ -12,4 +12,8 @@ db.connect().then(() =>{
 }).catch((err) =>{
     console.log(err.message);
 });
+
+
+
+
 export default db;
