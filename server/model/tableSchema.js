@@ -1,17 +1,16 @@
-import { Pool } from 'pg';
+import { Client } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const connectionString = process.env.DEV_URL;
-const pool = new Pool({connectionString});
-pool.connect();
+const client = new Client(connectionString);
+client.connect();
 
 const createTable = () => {
 
 const createTableText =`
-
-DROP TABLE IF EXISTS user CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
 
 DROP TABLE IF EXISTS bus CASCADE;
 
@@ -19,7 +18,7 @@ DROP TABLE IF EXISTS trip CASCADE;
 
 DROP TABLE IF EXISTS booking CASCADE;
 
-CREATE TABLE IF NOT EXISTS user(
+CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   firstname VARCHAR(155) NOT NULL,
   lastname VARCHAR(155) NOT NULL,
@@ -50,17 +49,20 @@ CREATE TABLE IF NOT EXISTS trip(
 CREATE TABLE IF NOT EXISTS booking(
     id SERIAL PRIMARY KEY,
     tripId int REFERENCES trip(id) ON DELETE CASCADE,
-    userId int REFERENCES user(id) ON DELETE CASCADE,
+    userId int REFERENCES users(id) ON DELETE CASCADE,
     createdOn timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
   )`;
 
-pool.query(createTableText, (err) => {
+
+
+client.query(createTableText, (err) => {
   if (err) {
     return err.message;
   }
-  pool.end();
+  client.end();
 });
 
-};
+}
 createTable();
+
 
