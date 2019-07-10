@@ -34,12 +34,47 @@ class UserController {
               return res.status(201)
                 .json({
                   status: 'success',
+                  data : {
+                  userId: user.rows[0].id,
                   is_admin: user.rows[0].isadmin,
                   message: 'Successfully created WayFarer account',
                   token: token
+                  }
                 });
             }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
         }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
+    }
+
+    signIn(req, res) {
+      const { email, password } = req.body;
+      db.query(`SELECT * FROM users WHERE email = '${email}'`).then((user) => {
+        if (user.rows.length === 1) {
+          const comparePassword = bcrypt.compareSync(password, user.rows[0].password);
+          if (comparePassword) {
+            const payload = {
+              userId: user.rows[0].id,
+              email
+            };
+            const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 10 }); // Expires in 10 hours
+            req.token = token;
+            return res.status(201)
+            .json({
+              status: 'success',
+              data : {
+              userId: user.rows[0].id,
+              is_admin: user.rows[0].isadmin,
+              token: token,
+              message: 'You are now logged in',
+              }
+            });
+          }
+        }
+        return res.status(422)
+          .json({
+            status: 'Failed',
+            message: 'Invalid Email or Password'
+          });
+      }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
     }
 }
 

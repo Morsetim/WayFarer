@@ -28,6 +28,9 @@ class userValidator{
         if(validator.isEmpty(email)){
             catchErrors.email = 'Field must be an Email format';
         }
+        if(!validator.isAlphanumeric(password)){
+            catchErrors.password = 'Fields should contain alphabets and numbers';
+        }
         if(!validator.isEmpty(password)){
             if(!validator.isLength(password, {min:6})){
                 catchErrors.password = 'Password length must be at least six characters long';
@@ -39,6 +42,30 @@ class userValidator{
             return res.status(400).json({catchErrors});
         }
         next();
+}
+signIn(req, res, next){
+    const {email, password} = req.body;
+    let signErrors = {};
+    if(email == undefined || password == undefined){
+    return res.status(422).json({status:'Failed', message:'All or some fields are empty'}); 
+    }
+    if(!validator.isEmail(email)){
+        signErrors.email = 'Field must be an Email format';
+    }
+    if(!validator.isAlphanumeric(password)){
+        signErrors.password = 'Fields should contain alphabets and numbers';
+    }
+    if(!validator.isEmpty(password)){
+        if(!validator.isLength(password, {min:6})){
+            signErrors.password = 'Password length must be at least six characters long';
+        }
+    }else{
+        signErrors.password = 'Field cannot be Empty';
+    }
+    if(Object.keys(signErrors).length != 0){
+        return res.status(422).json({signErrors});
+    }
+    next();
 }
 }
 
