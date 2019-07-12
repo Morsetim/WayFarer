@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import env from 'dotenv';
 import db from '../model/db';
 
@@ -33,7 +32,7 @@ class TripController{
         db.query(sql).then(info => {
           return res.status(201)
             .json({
-              status: 'success',
+              status : 'success',
               data : info.rows
 
             });
