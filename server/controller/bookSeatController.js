@@ -16,16 +16,16 @@ class Booking{
             .json({
               status: 'success',
               data : {
-              booking_id: book.rows[0].id,
-              user_id: book.rows[0].userid, //
-              trip_id: book.rows[0].tripid, //
-              bus_id: book.rows[0].bus_id,
-              trip_id: book.rows[0].tripid,
-              seat_number: book.rows[0].seat_number,
-              first_name: book.rows[0].first_name,
-              last_name: book.rows[0].last_name,
-              createdOn: book.rows[0].createdOn,
-              email: book.rows[0].email
+              booking_id : book.rows[0].id,
+              user_id : book.rows[0].userid, //
+              trip_id : book.rows[0].tripid, //
+              bus_id : book.rows[0].bus_id,
+              trip_id : book.rows[0].tripid,
+              seat_number : book.rows[0].seat_number,
+              first_name : book.rows[0].first_name,
+              last_name : book.rows[0].last_name,
+              createdOn : book.rows[0].createdOn,
+              email : book.rows[0].email
               }
              });   
         }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));

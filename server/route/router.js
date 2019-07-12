@@ -19,7 +19,7 @@ router.route('/trip')
   .get(tripController.allTrips)
 router.route('/bus')
   .post(tripValidator.createBus, tripController.createBus)
-router.route('/booking')
+router.route('/bookings')
   .post(bookingController.seatBooking)
 
 export default router;
