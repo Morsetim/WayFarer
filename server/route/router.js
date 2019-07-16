@@ -18,18 +18,18 @@ router.route('/auth/signin')
 
 //Trip Route
 router.route('/trips/:busId')
-  .post(tripController.createTrip)
+  .post(authToken, checkAdmin, tripController.createTrip)
 router.route('/trips/:tripId')
   .patch(authToken, tripController.updateTrip)
 
 router.route('/trips')
-  .get(tripController.allTrips);
+  .get(authToken, checkAdmin, tripController.allTrips);
 
 // Bus Route
 router.route('/bus')
-  .post(tripValidator.createBus, tripController.createBus)
+  .post(authToken, checkAdmin, tripValidator.createBus, tripController.createBus)
 router.route('/bus/:busId')
-  .get(tripController.createBus)
+  .get(authToken, tripController.createBus)
 
 // Bookings Route
 router.route('/bookings/:tripId')

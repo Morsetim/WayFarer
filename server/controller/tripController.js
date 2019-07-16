@@ -20,8 +20,8 @@ class TripController {
   createTrip(req, res) {
     const { origin, destination, fare } = req.body;
     const trip_date = new Date();
+    const userId = req.decoded.user_id;
     const busId = parseInt(req.params.busId);
-
     db.query(`SELECT id FROM bus WHERE id=${busId}`).then(bus => {
 
       const selectedBus = bus.rows.find(bus => bus.id === busId);
@@ -32,8 +32,8 @@ class TripController {
             message: `Bus with ID ${busId} doest not exist`
           });
       }
-      const sql = 'INSERT INTO trips(busId, origin, destination, fare, trip_date) VALUES($1, $2, $3, $4, $5) RETURNING *';
-      const params = [busId, origin, destination, fare, trip_date];
+      const sql = 'INSERT INTO trips(busId, userId, origin, destination, fare, trip_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
+      const params = [busId, userId, origin, destination, fare, trip_date];
       db.query(sql, params)
         .then(info => {
           return res.status(201)
@@ -86,7 +86,7 @@ class TripController {
 
   updateTrip(req, res) {
     const {tripId} = req.params;
-    const {userId}= req.decoded;
+    const userId = req.decoded.user_id;
 
     const sql = `UPDATE trips SET status='Cancelled' WHERE id=${tripId} AND userId=${userId}`;
 
@@ -107,10 +107,10 @@ class TripController {
           status: 'Success',
           data: info.rows
         })
-    })
+    }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }));
   }
   usersBookings(req, res){
-    const {userId} = req.decoded;
+    const userId = req.decoded.user_id;
     const sql = `SELECT * FROM bookings WHERE userId = ${userId}`;
     db.query(sql).then((info) =>{
       return res.status(201)
@@ -118,7 +118,7 @@ class TripController {
           status: 'Success',
           data: info.rows
         })
-    })
+    }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }));
   }
 }
 

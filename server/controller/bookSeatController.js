@@ -8,7 +8,8 @@ class Booking {
   seatBooking(req, res) {
     const { seat_number } = req.body;
     const createdOn = new Date();
-    const { userId, email, firstName, lastName } = req.decoded;
+    const {email, firstName, lastName } = req.decoded;
+    const userId = req.decoded.user_id
     const tripId = parseInt(req.params.tripId);
 
     db.query(`SELECT id FROM trips WHERE id =${tripId}`).then(trip => {
@@ -41,7 +42,7 @@ class Booking {
    * @memberof Booking
    */
   deleteBooking(req, res) {
-    const { userId } = req.decoded;
+    const userId  = req.decoded.user_id;
     const { bookingId } = req.params;
     const sql = `DELETE FROM bookings WHERE id= ${bookingId} AND userId = ${userId}`;
     db.query(sql).then(() => {
