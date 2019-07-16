@@ -1,15 +1,18 @@
 import { Client } from 'pg';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 
 dotenv.config();
 
 const connectionString = process.env.DEV_URL;
 const client = new Client(connectionString);
 client.connect();
+const hashedPassword = bcrypt.hashSync('123456', 10);
+
 
 const createTable = () => {
-
-const createTableText =`
+console.log(hashedPassword,'--------------------------')
+const createTableText = `
 DROP TABLE IF EXISTS users CASCADE;
 
 DROP TABLE IF EXISTS bus CASCADE;
@@ -55,11 +58,12 @@ CREATE TABLE IF NOT EXISTS bookings(
   createdOn timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
   
-  INSERT INTO users(email, firstName, lastName, password, isAdmin)
-  VALUES('mors@test.com','Moris', 'Etim', 123456, true);
+   INSERT INTO users(email, firstName, lastName, password, isAdmin)
+   VALUES('mors@test.com','Moris', 'Etim', '${hashedPassword}', true);
   
-  INSERT INTO users(email, firstName, lastName, password)
-  VALUES('user@test.com','User', 'Etim', 123456);
+   INSERT INTO users(email, firstName, lastName, password)
+  VALUES('user@test.com','User', 'Etim', '${hashedPassword});
+
 
   INSERT INTO bus(number_plate, manufacturer, model, year, capacity)
   VALUES('546ET6','Toyota','Corolla', 1998, 38);
