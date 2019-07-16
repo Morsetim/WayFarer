@@ -15,8 +15,8 @@ class UserController {
           if (userFound.rows.length === 1) {
             return res.status(409)
               .json({
-                status: 'Failed',
-                message: 'User Already Exist'
+                Status: 'Failed',
+                Message: 'User Already Exist'
               });
           }
           const sql = 'INSERT INTO users(email, firstName, lastName, password) VALUES($1, $2, $3, $4) RETURNING *';
@@ -24,8 +24,8 @@ class UserController {
           db.query(sql, params)
             .then((user) => {
               const payload = {
-                userId: user.rows[0].id,
-                email, firstName, lastName
+                UserId: user.rows[0].id,
+                Email, firstName, lastName
               };
               const token = jwt.sign(payload, process.env.SECRET_KEY, {
                 expiresIn: 60 * 60 * 10 // 10 hours
@@ -33,37 +33,42 @@ class UserController {
               req.token = token;
               return res.status(201)
                 .json({
-                  status: 'success',
-                  data : {
-                  userId: user.rows[0].id,
+                  Status: 'success',
+                  Data : {
+                  user_id: user.rows[0].id,
                   is_admin: user.rows[0].isadmin,
-                  message: 'Successfully created WayFarer account',
-                  token: token
+                  Message: 'Successfully created WayFarer account',
+                  Token: token
                   }
                 });
-            }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
-        }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
+            }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }));
+        }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }));
     }
 
     signIn(req, res) {
       const { email, password } = req.body;
       db.query(`SELECT * FROM users WHERE email = '${email}'`).then((user) => {
         if (user.rows.length === 1) {
-          const comparePassword = bcrypt.compareSync(password, user.rows[0].password);
+          const hashedPassword = bcrypt.compareSync(password, user.rows[0].password);
+          const comparePassword = hashedPassword;
           if (comparePassword) {
             const payload = {
-              userId: user.rows[0].id,
-              email
+              user_id: user.rows[0].id,
+              email,
+              first_name:user.rows[0].firstname,
+              last_name:user.rows[0].lastname,
+              is_admin:user.rows[0].isadmin
             };
+            
             const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 10 }); // Expires in 10 hours
             req.token = token;
             return res.status(201)
             .json({
               status: 'success',
               data : {
-              userId: user.rows[0].id,
+              user_id: user.rows[0].id,
               is_admin: user.rows[0].isadmin,
-              token: token,
+              Token: token,
               message: 'You are now logged in',
               }
             });
@@ -74,8 +79,9 @@ class UserController {
             status: 'Failed',
             message: 'Invalid Email or Password'
           });
-      }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
+      }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }));
     }
+
 }
 
 export default new UserController();

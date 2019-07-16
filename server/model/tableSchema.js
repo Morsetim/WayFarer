@@ -14,15 +14,15 @@ DROP TABLE IF EXISTS users CASCADE;
 
 DROP TABLE IF EXISTS bus CASCADE;
 
-DROP TABLE IF EXISTS trip CASCADE;
+DROP TABLE IF EXISTS trips CASCADE;
 
-DROP TABLE IF EXISTS booking CASCADE;
+DROP TABLE IF EXISTS bookings CASCADE;
 
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
-  firstname VARCHAR(155) UNIQUE NOT NULL,
-  lastname VARCHAR(155) UNIQUE NOT NULL,
-  email VARCHAR(155) UNIQUE NOT NULL,
+  firstname VARCHAR(155) NOT NULL,
+  lastname VARCHAR(155) NOT NULL,
+  email VARCHAR(155) NOT NULL,
   password VARCHAR(155) NOT NULL,
   isAdmin BOOLEAN DEFAULT false
 );
@@ -36,29 +36,40 @@ CREATE TABLE IF NOT EXISTS bus(
   capacity INTEGER NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS trip(
+CREATE TABLE IF NOT EXISTS trips(
   id SERIAL PRIMARY KEY,
   busId int REFERENCES bus(id) ON DELETE CASCADE,
   origin VARCHAR(155) NOT NULL,
   destination VARCHAR(155) NOT NULL,
-  trip_date timestamptz UNIQUE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  trip_date timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
   fare INTEGER NOT NULL,
+  userId int REFERENCES users(id) ON DELETE CASCADE,
   status VARCHAR(155) DEFAULT 'active'
 );
 
-CREATE TABLE IF NOT EXISTS booking(
+CREATE TABLE IF NOT EXISTS bookings(
   id SERIAL PRIMARY KEY,
-  tripId int REFERENCES trip(id) ON DELETE CASCADE,
+  tripid int REFERENCES trips(id) ON DELETE CASCADE,
   userId int REFERENCES users(id) ON DELETE CASCADE,
-  createdOn timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
- 	seat_number INTEGER NOT NULL,
- 	bus_id int REFERENCES bus(id) ON DELETE CASCADE,
-	tripsDate timestamptz REFERENCES trip(trip_date) ON DELETE CASCADE,
-	first_name VARCHAR(155) REFERENCES users(firstname) ON DELETE CASCADE,
-	last_name VARCHAR(155) REFERENCES users(lastname) ON DELETE CASCADE,
-	email VARCHAR(155) REFERENCES users(email) ON DELETE CASCADE
-  )`;
+  seat_number INTEGER NOT NULL,
+  createdOn timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+  
+  INSERT INTO users(email, firstName, lastName, password, isAdmin)
+  VALUES('mors@test.com','Moris', 'Etim', 123456, true);
+  
+  INSERT INTO users(email, firstName, lastName, password)
+  VALUES('user@test.com','User', 'Etim', 123456);
 
+  INSERT INTO bus(number_plate, manufacturer, model, year, capacity)
+  VALUES('546ET6','Toyota','Corolla', 1998, 38);
+
+  INSERT INTO bus(number_plate, manufacturer, model, year, capacity)
+  VALUES('546ET7','Boyota','Borolla', 1999, 48);
+
+  INSERT INTO trips(busId, origin, destination, fare, trip_date,userId)
+  VALUES(1,'Yaba','Lago', 12, '2019-07-14T09:01:11.530Z',1)
+  `;
 
 
 client.query(createTableText, (err) => {

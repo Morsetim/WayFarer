@@ -4,61 +4,122 @@ import db from '../model/db';
 
 env.config();
 
-class TripController{
-    createTrip(req,res){
-        const {origin, destination, fare} = req.body;
+/**
+ *
+ *
+ * @class TripController
+ */
+class TripController {
+  /**
+   *
+   *
+   * @param {obj} req
+   * @param {obj} res
+   * @memberof TripController
+   */
+  createTrip(req, res) {
+    const { origin, destination, fare } = req.body;
+    const trip_date = new Date();
+    const busId = parseInt(req.params.busId);
 
-        const sql = 'INSERT INTO trip(origin, destination, fare) VALUES($1, $2, $3) RETURNING *';
-        const params = [origin, destination, fare];
-        db.query(sql, params)
-        .then((info) =>{
-            return res.status(201)
-                .json({
-                    status: 'success',
-                    data : {
-                        trip_id : info.rows[0].id,
-                        bus_id : info.rows[0].busid,
-                        origin : info.rows[0].origin,
-                        destination : info.rows[0].destination,
-                        trip_date : info.rows[0].trip_date,
-                        fare : info.rows[0].fare
-                    }
+    db.query(`SELECT id FROM bus WHERE id=${busId}`).then(bus => {
 
-                })
-        }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
-    }
-    allTrips(req, res) {
-        const sql = `SELECT * FROM trip`
-        db.query(sql).then(info => {
+      const selectedBus = bus.rows.find(bus => bus.id === busId);
+      if (selectedBus.rowCount < 1) {
+        return res.status(422)
+          .json({
+            status: 'Failed',
+            message: `Bus with ID ${busId} doest not exist`
+          });
+      }
+      const sql = 'INSERT INTO trips(busId, origin, destination, fare, trip_date) VALUES($1, $2, $3, $4, $5) RETURNING *';
+      const params = [busId, origin, destination, fare, trip_date];
+      db.query(sql, params)
+        .then(info => {
           return res.status(201)
             .json({
-              status : 'success',
-              data : info.rows
-
+              Status: 'success',
+              Data: info.rows[0]
             });
-        }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }))
-    }
+        }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
+    }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }));
+  }
 
-    createBus(req, res){
-        const {number_plate, manufacturer, model, year, capacity} = req.body;
+  /**
+   *
+   *
+   * @param {obj} req
+   * @param {obj} res
+   * @memberof TripController
+   */
+  allTrips(req, res) {
+    const sql = `SELECT * FROM trips`
+    db.query(sql).then(info => {
+      return res.status(201)
+        .json({
+          Status: 'success',
+          Data: info.rows
+        });
+    }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }))
+  }
+  /**
+   *
+   *
+   * @param {obj} req
+   * @param {obj} res
+   * @memberof TripController
+   */
+  createBus(req, res) {
+    const { number_plate, manufacturer, model, year, capacity } = req.body;
 
-        const sql = 'INSERT INTO bus(number_plate, manufacturer, model, year, capacity) VALUES($1,$2,$3,$4,$5) RETURNING *';
-        const params = [number_plate, manufacturer, model, year, capacity];
-        db.query(sql, params)
-        .then((info) =>{
-            return res.status(201)
-                .json({
-                    status : 'success',
-                    data : {
-                        bus_id : info.rows[0].id,
-                        number_plate : info.rows[0].number_plate,
-                        manufacturer : info.rows[0].manufacturer,
-                        model : info.rows[0].model,
-                        year : info.rows[0].year,
-                        capacity : info.rows[0].capacity
-                    }
-                })
-        }).catch(err => res.status(500).json({ status: 'Failed', message: err.message }))
+    const sql = 'INSERT INTO bus(number_plate, manufacturer, model, year, capacity) VALUES($1,$2,$3,$4,$5) RETURNING *';
+    const params = [number_plate, manufacturer, model, year, capacity];
+    db.query(sql, params)
+      .then((info) => {
+        return res.status(201)
+          .json({
+            Status: 'success',
+            data: info.rows[0]
+          })
+      }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }))
+  }
+
+  updateTrip(req, res) {
+    const {tripId} = req.params;
+    const {userId}= req.decoded;
+
+    const sql = `UPDATE trips SET status='Cancelled' WHERE id=${tripId} AND userId=${userId}`;
+
+    db.query(sql).then(() => {
+      return res.status(201)
+        .json({
+          message: 'Trip cancelled successfully'
+        })
+    }).catch(err => res.status(500).json({ Status: 'Failed', Message: err.message }))
+  }
+
+  allBookings(req, res){
+    const sql = `SELECT * FROM bookings`;
+    db.query(sql).then((info) =>{
+      console.log(info.rows);
+      return res.status(201)
+        .json({
+          status: 'Success',
+          data: info.rows
+        })
+    })
+  }
+  usersBookings(req, res){
+    const {userId} = req.decoded;
+    const sql = `SELECT * FROM bookings WHERE userId = ${userId}`;
+    db.query(sql).then((info) =>{
+      return res.status(201)
+        .json({
+          status: 'Success',
+          data: info.rows
+        })
+    })
+  }
 }
-}
+
 export default new TripController();

@@ -9,21 +9,21 @@ class tripValidator{
         return res.status(422).json({status:'Failed', message:'All or some fields are empty'});
     }
     
-    if(!validator.isAlphanumeric(origin)){
-        if(!validator.isEmpty(origin)){
+    if(validator.isAlphanumeric(origin)){
+        if(validator.isEmpty(origin)){
         catchErrors.origin = 'Field cannot be empty';
         }   
     }else{
         catchErrors.origin = 'Fields should contain alphabets and numbers';
         }
-    if(!validator.isAlphanumeric(destination)){
-        if(!validator.isEmpty(destination)){
+    if(validator.isAlphanumeric(destination)){
+        if(validator.isEmpty(destination)){
         catchErrors.destination = 'Field cannot be empty';
         }   
     }else{
             catchErrors.destination = 'Fields should contain alphabets and numbers';
         }        
-    if(!validator.isEmpty(fare)){
+    if(validator.isEmpty(fare)){
         catchErrors.fare = 'Field cannot be empty';
         }
     if(validator.isAlpha(fare)){
@@ -54,7 +54,7 @@ class tripValidator{
         }else{
                 catchErrors.manufacturer = 'Fields should contain alphabets and numbers';
             }
-        if(!validator.isAlphanumeric(model)){
+        if(validator.isAlphanumeric(model)){
             if(validator.isEmpty(model)){
             catchErrors.model = 'Field cannot be empty';
             }   

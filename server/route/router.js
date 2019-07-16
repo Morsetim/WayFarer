@@ -4,22 +4,41 @@ import tripController from '../controller/tripController';
 import bookingController from '../controller/bookSeatController';
 import userValidator from '../middleware/userValidation';
 import tripValidator from '../middleware/tripValidation';
+import authToken from '../middleware/tokenAuthentification';
+import checkAdmin from '../middleware/checkAdmin';
+
 
 const router = express.Router();
 
 //User Route
 router.route('/auth/signup')
-  .post(userValidator.signUp, userController.signUp);
+  .post(userValidator.signUp, userController.signUp)
 router.route('/auth/signin')
-  .get(userController.signIn)
+  .get(userValidator.signIn, userController.signIn)
 
 //Trip Route
-router.route('/trip')
-  .post(tripValidator.createTrip, tripController.createTrip)
-  .get(tripController.allTrips)
+router.route('/trips/:busId')
+  .post(tripController.createTrip)
+router.route('/trips/:tripId')
+  .patch(authToken, tripController.updateTrip)
+
+router.route('/trips')
+  .get(tripController.allTrips);
+
+// Bus Route
 router.route('/bus')
   .post(tripValidator.createBus, tripController.createBus)
-router.route('/bookings')
-  .post(bookingController.seatBooking)
+router.route('/bus/:busId')
+  .get(tripController.createBus)
+
+// Bookings Route
+router.route('/bookings/:tripId')
+  .post(authToken, bookingController.seatBooking)
+router.route('/bookings/:bookingId')
+  .delete(authToken, bookingController.deleteBooking);
+  router.route('/bookings')
+  .get(authToken, checkAdmin, tripController.allBookings)
+  router.route('/bookings/user')
+  .get(authToken, tripController.usersBookings)
 
 export default router;
