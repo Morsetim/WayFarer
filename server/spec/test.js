@@ -1,6 +1,8 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import app from '../app';
+import db from './../model/db';
+
 
 const { expect } = chai;
 const request = supertest(app);
@@ -8,6 +10,13 @@ let myToken;
 const wrongToken = 'hghgjhgjgjgjggg';
 
 describe('All test cases for WarFarer Application', () => {
+  // before('Empty user table',()=>{
+
+  //   db.query('DELETE FROM users');
+  //   db.query('DELETE FROM trips');
+  //   db.query('DELETE FROM bookings');
+  //   db.query('DELETE FROM bus');
+  // })
   describe('test case for loading application home page', () => {
     it('Should load application home page', (done) => {
       request.get('/')
@@ -42,10 +51,7 @@ describe('All test cases for WarFarer Application', () => {
           .set('Content-Type', 'application/json')
           .expect(404)
           .end((err, res) => {
-            // expect(res.body).deep.equal({
-            //   status: 'Failed',
-            //   message: 'Page not found'
-            // });
+            
             expect(res.body).to.have.property('status');
             expect(res.body).to.have.property('message');
 
@@ -56,10 +62,28 @@ describe('All test cases for WarFarer Application', () => {
     });
     describe('All test cases for Users', () => {
       describe('All test cases for Users sign up', () => {
+        it('succedss `201`', (done) => {
+          const userProfile = {
+            email: 'cagey@yahoo.com',
+            firstName: 'cagey',
+            lastName: 'Jonny',
+            password: '123456'
+          };
+          request.post('/api/v1/auth/signup')
+            .send(userProfile)
+            .expect(201)
+            .end((err, res) => {
+              expect(res.body).to.have.property('Status');
+             expect(res.body.Data).to.be.an('object');
+              done();
+            });
+        });
+
+
       it('should  check if user already in the model and return a `409`', (done) => {
         const userProfile = {
-          email: 'cage@yahoo.com',
-          firstName: 'cage',
+          email: 'cagey@yahoo.com',
+          firstName: 'cagey',
           lastName: 'Jonny',
           password: 'password'
         };
@@ -116,7 +140,7 @@ describe('All test cases for WarFarer Application', () => {
             expect(res.body.catchErrors).to.have.property('password');
             done();
           });
-      });
+      })
    
     describe('All test cases for user signIn ', () => {
       it('should not Login  a new user and return a `422`', (done) => {
@@ -170,41 +194,30 @@ describe('All test cases for WarFarer Application', () => {
       });
       it('should Login a new user and return a `201`', (done) => {
         const userInfo = {
-          email: 'mors@test.com',
+          email: 'cagey@yahoo.com',
           password: '123456'
         };
-        request.post('/api/v1/auth/signin')
+        request.get('/api/v1/auth/signin')
           .send(userInfo)
           .expect(201)
           .end((err, res) => {
-            myToken = res.body.token;
+            myToken = res.body.data.Token;
             expect(res.body).to.have.property('status');
             done();
           });
       });
-  //     it('change user role for test', (done) => {
-  //       request.patch('/api/v1/users/1/test')
-  //         .set('x-access-token', myToken)
-  //         .expect(200)
-  //         .end((err, res) => {
-  //           console.log(res.body, '------------')
-  //           expect(res.body).to.be.an('object');
-  //           done();
-  //         })
-  //     })
 
 
-  //     it('Should verify user status and return `422`', (done) => {
-  //       request.patch('/api/v1/users/micium.maurice@yahoo.com/verify')
-  //         .set('x-access-token', myToken)
-  //         .send({})
-  //         .expect(422)
-  //         .end((err, res) => {
-  //           expect(res.body.status).to.equal("Failed");
-  //           expect(res.body.message).to.equal('This fields cannot be empty');
-  //           done();
-  //         });
-  //     });
+      it('Should cancel trip `201`', (done) => {
+        request.patch('/api/v1/trips/1')
+          .set('x-access-token', myToken)
+          .send({})
+          .expect(201)
+          .end((err, res) => {
+            expect(res.body).to.have.property('message');
+            done();
+          });
+      });
   //   });
     describe('test case for retriving trips', () => {
       it('should return `401` status code with `res.body` failed messages', (done) => {
@@ -237,17 +250,15 @@ describe('All test cases for WarFarer Application', () => {
             done();
           });
       });
-      // describe('test case for retriving trips', () => {
-      //   it('should return `201` status code with `res.body` success messages', (done) => {
-      //     request.get('/api/v1/trips')
-      //       .set('x-access-token', myToken)
-      //       console.log(myToken, "==============oooooo")
-      //       .expect(201)
-      //       .end((err, res) => {
-      //         console.log(res.body);
-      //         done();
-      //       });
-      //   });
+        // it('should return `201` status code with `res.body` success messages', (done) => {
+        //   request.get('/api/v1/trips')
+        //     .set('x-access-token', myToken)
+        //     .expect(201)
+        //     .end((err, res) => {
+        //       console.log(res.body, '========---00');
+        //       done();
+        //     });
+        // });
       // it('should get a one loan return `201` status code with `res.body` success messages', (done) => {
       //   request.get('/api/v1/loans/1')
       //     .set('x-access-token', myToken)
@@ -358,7 +369,6 @@ describe('All test cases for WarFarer Application', () => {
           year: ' ',
           capacity: ' '
         };
-        // number_plate, manufacturer, model, year, capacity
         request.post('/api/v1/bus')
           .send(bus)
           .expect(401)

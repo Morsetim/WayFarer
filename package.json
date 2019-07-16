@@ -5,10 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon --watch server --exec babel-node -- server/app.js",
-    "test": "nyc --reporter=html --reporter=text mocha --timeout 50000 --exit --require @babel/register ./server/spec/",
+    "start": "node ./build/app.js",
+    "build": "babel -d ./build ./server -s",
+    "test": "set NODE_ENV=test&& npm run migrate&& nyc --reporter=html --reporter=text mocha --timeout 50000 --exit --require @babel/register ./server/spec/",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "db": "babel-node -- server/model/db.js",
     "migrate": "babel-node -- server/model/tableSchema.js"
+  },
+  "engines":{
+    "node":"10.14.1"
   },
   "repository": {
     "type": "git",
