@@ -52,9 +52,7 @@ signIn(req, res, next){
     if(!validator.isEmail(email)){
         signErrors.email = 'Field must be an Email format';
     }
-    if(!validator.isAlphanumeric(password)){
-        signErrors.password = 'Fields should contain alphabets and numbers';
-    }
+
     if(!validator.isEmpty(password)){
         if(!validator.isLength(password, {min:6})){
             signErrors.password = 'Password length must be at least six characters long';

@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">39.47% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>15/38</span>
+        <span class='fraction'>19/38</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">16.67% </span>
@@ -30,21 +30,21 @@
         <span class='fraction'>1/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/8</span>
+        <span class='fraction'>4/8</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">35.29% </span>
+        <span class="strong">47.06% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>12/34</span>
+        <span class='fraction'>16/34</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -147,20 +147,20 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -175,7 +175,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,18 +232,18 @@ class UserController {
       const hashedPassword = bcrypt.hashSync(password, 10);
       db.query(`SELECT id FROM users WHERE email = '${email}'`)
         .then((userFound) =&gt; {
-          <span class="missing-if-branch" title="else path not taken" >E</span>if (userFound.rows.length === 1) {
-            return res.status(409)
+          <span class="missing-if-branch" title="if path not taken" >I</span>if (userFound.rows.length === 1) {
+<span class="cstat-no" title="statement not covered" >            return r</span>es.status(409)
               .json({
                 Status: 'Failed',
                 Message: 'User Already Exist'
               });
           }
-          const sql = <span class="cstat-no" title="statement not covered" >'INSERT INTO users(email, firstName, lastName, password) VALUES($1, $2, $3, $4) RETURNING *';</span>
-          const params = <span class="cstat-no" title="statement not covered" >[e</span>mail, firstName, lastName, hashedPassword];
-<span class="cstat-no" title="statement not covered" >          db.q</span>uery(sql, params)
-            .then(<span class="fstat-no" title="function not covered" >(u</span>ser) =&gt; {
-              const payload = <span class="cstat-no" title="statement not covered" >{</span>
+          const sql = 'INSERT INTO users(email, firstName, lastName, password) VALUES($1, $2, $3, $4) RETURNING *';
+          const params = [email, firstName, lastName, hashedPassword];
+          db.query(sql, params)
+            .then((user) =&gt; {
+              const payload = {
                 UserId: user.rows[0].id,
                 Email, firstName, lastName
               };
@@ -255,13 +255,13 @@ class UserController {
                 .json({
                   Status: 'success',
                   Data : {
-                  UserId: user.rows[0].id,
-                  IsAdmin: user.rows[0].isadmin,
+                  user_id: user.rows[0].id,
+                  is_admin: user.rows[0].isadmin,
                   Message: 'Successfully created WayFarer account',
                   Token: token
                   }
                 });
-            }).catch(<span class="fstat-no" title="function not covered" >err<span class="cstat-no" title="statement not covered" > </span>=&gt; r</span>es.status(500).json({ Status: 'Failed', Message: err.message }));
+            }).catch(err =&gt; res.status(500).json({ Status: 'Failed', Message: err.message }));
         }).catch(<span class="fstat-no" title="function not covered" >err<span class="cstat-no" title="statement not covered" > </span>=&gt; r</span>es.status(500).json({ Status: 'Failed', Message: err.message }));
     }
 &nbsp;
@@ -273,11 +273,11 @@ class UserController {
           const comparePassword = <span class="cstat-no" title="statement not covered" >hashedPassword;</span>
 <span class="cstat-no" title="statement not covered" >          if (comparePassword) {</span>
             const payload = <span class="cstat-no" title="statement not covered" >{</span>
-              userId: user.rows[0].id,
+              user_id: user.rows[0].id,
               email,
-              firstName:user.rows[0].firstname,
-              lastName:user.rows[0].lastname,
-              isAdmin:user.rows[0].isadmin
+              first_name:user.rows[0].firstname,
+              last_name:user.rows[0].lastname,
+              is_admin:user.rows[0].isadmin
             };
             
             const token = <span class="cstat-no" title="statement not covered" >jwt.s</span>ign(payload, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 10 }); // Expires in 10 hours
@@ -286,8 +286,8 @@ class UserController {
             .json({
               status: 'success',
               data : {
-              UserId: user.rows[0].id,
-              isAdmin: user.rows[0].isadmin,
+              user_id: user.rows[0].id,
+              is_admin: user.rows[0].isadmin,
               Token: token,
               message: 'You are now logged in',
               }
@@ -310,7 +310,7 @@ export default new UserController();</pre></td></tr>
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 15 2019 14:31:40 GMT-0700 (Pacific Daylight Time)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Mon Jul 15 2019 19:41:56 GMT-0700 (Pacific Daylight Time)
 </div>
 </div>
 <script src="..\..\prettify.js"></script>

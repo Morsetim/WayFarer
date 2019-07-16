@@ -23,9 +23,10 @@ class UserController {
           const params = [email, firstName, lastName, hashedPassword];
           db.query(sql, params)
             .then((user) => {
+              // console.log(user);
               const payload = {
                 UserId: user.rows[0].id,
-                Email, firstName, lastName
+                email, firstName, lastName
               };
               const token = jwt.sign(payload, process.env.SECRET_KEY, {
                 expiresIn: 60 * 60 * 10 // 10 hours
