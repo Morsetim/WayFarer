@@ -10,17 +10,11 @@ class userValidator{
         if(firstName == undefined || lastName == undefined || email == undefined || password == undefined){
             return res.status(422).json({status:'Failed', message:'All or some fields are empty'});
         }
-        if(!validator.isLength(firstName, {min:2})){
-            catchErrors.firstName = 'First name length must be at least two characters long';
+        if(validator.isAlpha(lastName)){
+            catchErrors.lastName = 'Fields should contain alphabets and numbers';
         }
-        if(firstName.search(/^[a-zA-Z]*$/) === -1){
-            catchErrors.firstName = 'Firstname should only be Alphabets';
-        }
-        if(!validator.isLength(lastName, {min:2})){
-            catchErrors.lastName = 'Lastname length must be at least two characters long';
-        }
-        if(lastName.search(/^[a-zA-Z]*$/) === -1){
-            catchErrors.lastName = 'Lastname should only be Alphabets';
+        if(validator.isAlpha(firstName)){
+            catchErrors.firstName = 'Fields should contain alphabets and numbers';
         }
         if(!validator.isEmail(email)){
             catchErrors.email = 'Field must be an Email format';
@@ -28,7 +22,7 @@ class userValidator{
         if(validator.isEmpty(email)){
             catchErrors.email = 'Field must be an Email format';
         }
-        if(!validator.isAlphanumeric(password)){
+        if(validator.isAlphanumeric(password)){
             catchErrors.password = 'Fields should contain alphabets and numbers';
         }
         if(!validator.isEmpty(password)){

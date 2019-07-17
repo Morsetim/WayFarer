@@ -58,7 +58,7 @@ responsibilities.
 
 <tr><td>POST</td> <td>api/v1/auth/signup</td> <td> SignUp </td></tr>
 
-<tr><td>GET</td> <td>api/v1/auth/signin</td> <td> Sign-In </td></tr>
+<tr><td>POST</td> <td>api/v1/auth/signin</td> <td> Sign-In </td></tr>
 
 <tr><td>POST</td> <td>/api/v1/trips</td> <td>All Trips </td></tr>
 
