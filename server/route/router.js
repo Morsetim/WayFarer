@@ -14,7 +14,7 @@ const router = express.Router();
 router.route('/auth/signup')
   .post(userValidator.signUp, userController.signUp)
 router.route('/auth/signin')
-  .get(userValidator.signIn, userController.signIn)
+  .post(userValidator.signIn, userController.signIn)
 
 //Trip Route
 router.route('/trips/:busId')
