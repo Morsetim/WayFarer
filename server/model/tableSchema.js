@@ -8,7 +8,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = configuration[env];
 const connectionString = config.url;
 
-console.log(env,'-----env------');
+
 const client = new Client(connectionString);
 client.connect();
 const hashedPassword = bcrypt.hashSync('123456', 10);
