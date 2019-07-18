@@ -23,7 +23,7 @@ class UserController {
           const params = [email, firstName, lastName, hashedPassword];
           db.query(sql, params)
             .then((user) => {
-              // console.log(user);
+              console.log(user);
               const payload = {
                 UserId: user.rows[0].id,
                 email, firstName, lastName

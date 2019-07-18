@@ -8,6 +8,7 @@ console.log(env, '===============env');
 const config = configuration[env];
 console.log(config, '-------cofig');
 const connectionString = config.url;
+console.log(connectionString, '======09090')
 dotenv.config();
 
 const db = new Pool({connectionString});

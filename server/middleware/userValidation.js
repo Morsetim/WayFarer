@@ -11,10 +11,10 @@ class userValidator{
             return res.status(422).json({status:'Failed', message:'All or some fields are empty'});
         }
         if(validator.isAlpha(lastName)){
-            catchErrors.lastName = 'Fields should contain alphabets and numbers';
+            catchErrors.lastName = 'Fields should contain alphabets';
         }
         if(validator.isAlpha(firstName)){
-            catchErrors.firstName = 'Fields should contain alphabets and numbers';
+            catchErrors.firstName = 'Fields should contain alphabets';
         }
         if(!validator.isEmail(email)){
             catchErrors.email = 'Field must be an Email format';
