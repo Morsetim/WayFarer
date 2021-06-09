@@ -22,8 +22,8 @@ class userValidator{
         if(validator.isEmpty(email)){
             catchErrors.email = 'Field must be an Email format';
         }
-        if(!validator.isAlphanumeric(password)){
-            catchErrors.password = 'Fields should contain alphabets and numbers';
+        if(validator.isAlphanumeric(password)){
+            catchErrors.password = 'Fields can only contain alphabets';
         }
         if(!validator.isEmpty(password)){
             if(!validator.isLength(password, {min:6})){
