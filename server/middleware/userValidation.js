@@ -22,7 +22,7 @@ class userValidator{
         if(validator.isEmpty(email)){
             catchErrors.email = 'Field must be an Email format';
         }
-        if(validator.isAlphanumeric(password)){
+        if(!validator.isAlphanumeric(password)){
             catchErrors.password = 'Fields should contain alphabets and numbers';
         }
         if(!validator.isEmpty(password)){
