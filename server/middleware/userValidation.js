@@ -17,7 +17,7 @@ class userValidator{
             catchErrors.firstName = 'Fields should contain alphabets';
         }
         if(!validator.isEmail(email)){
-            catchErrors.email = 'Field must be an Email format';
+            catchErrors.email = 'Fieldsssss must be an Email format';
         }
         if(validator.isEmpty(email)){
             catchErrors.email = 'Fieldsss must be an Email format';
