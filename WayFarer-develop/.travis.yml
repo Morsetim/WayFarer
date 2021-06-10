@@ -1,0 +1,28 @@
+sudo: required
+language: node_js
+node_js:
+  - "node"
+services:
+  - postgresql 
+env:
+  - NODE_ENV=test
+  global:
+  - 7e57ea28c29e9730f3c9195b9722ddab6a0a2314e29e2f0fd4c8bb4f8134acd8
+before_script:
+  - npm install
+  - npm install coveralls --save-dev
+  - npm install mocha-lcov-reporter --save-dev
+  - npm install supertest 
+  - psql -c 'create database wayfarertest;' -U postgres
+  - npm run migrate
+  - yarn global add nyc
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - npm run test
+  - nyc --reporter=lcov yarn run test
+
+after_success:
+  - npm run coveralls
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
