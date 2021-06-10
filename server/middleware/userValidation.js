@@ -20,10 +20,10 @@ class userValidator{
             catchErrors.email = 'Field must be an Email format';
         }
         if(validator.isEmpty(email)){
-            catchErrors.email = 'Field must be an Email format';
+            catchErrors.email = 'It must be an Email format';
         }
         if(validator.isAlphanumeric(password)){
-            catchErrors.password = 'Fields can only contain alphabets';
+            catchErrors.password = 'It can only contain alphabets';
         }
         if(!validator.isEmpty(password)){
             if(!validator.isLength(password, {min:6})){

@@ -24,7 +24,7 @@ class tripValidator{
             catchErrors.destination = 'Fields should contain alphabets and numbers';
         }        
     if(validator.isEmpty(fare)){
-        catchErrors.fare = 'Field cannot be empty';
+        catchErrors.fare = 'Fare Field cannot be empty';
         }
     if(validator.isAlpha(fare)){
         catchErrors.fare = 'Field Should only contain numbers';
